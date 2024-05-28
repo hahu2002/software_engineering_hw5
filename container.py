@@ -1,3 +1,4 @@
+# container.py
 class Container:
     def __init__(self, icon, name, level):
         self.icon = icon
@@ -11,23 +12,36 @@ class Container:
     def draw(self):
         raise NotImplementedError
 
+# Tree Container
 class TreeContainer(Container):
-    def draw(self, prefix=""):
-        connector = "├── " if prefix else ""
+    def draw( self , prefix="" , flag = 0 ):
+        connector = "" #"───" if prefix else ""
         print(f"{prefix}{connector}{self.icon} Tree Container: {self.name} at level {self.level}")
-        new_prefix = prefix + ("│   " if prefix else "")
+        new_prefix = prefix + ("   " if prefix else "")
+        flag += 1
         for i, child in enumerate(self.children):
             if i == len(self.children) - 1:
-                child.draw(new_prefix + "└── ")
+                child.draw( max( 0 , ( flag - 1 ) ) * "│  " + max( 0 , len(new_prefix) // 3 - flag + 1 ) * "   " + "└──" , flag - 1 )
+                flag -= 1
             else:
-                child.draw(new_prefix + "├── ")
+                child.draw( max( 0 , ( flag - 1 ) ) * "│  " + max( 0 , len(new_prefix) // 3 - flag + 1 ) * "   " + "├──" , flag )
 
+# Rectangle Container
 class RectangleContainer(Container):
-    def draw(self):
-        newstring = f"Rectangle Container: {self.name} at level {self.level}"
-        border = f"{self.icon}" + " " + "+" + "-" * ( len(newstring) + 2) + "+"
-        print(border)
-        print(f"{self.icon} | Rectangle Container: {self.name} at level {self.level} |")
-        for child in self.children:
-            child.draw( len(newstring) )
-        print(border)
+    MAXLEN = 100
+    def draw( self , prefix="" , flag = 0 ):
+        connector = "" #"───" if prefix else ""
+        if ( self.level == 0 ):
+            print( f"{self.icon} " + "┌" + "─" * ( self.MAXLEN - 2 ) + "┐")
+        length = len( f"│ {prefix}{connector} Rectangle Container: {self.name} at level {self.level} " )
+        print(f"{self.icon} │ {prefix}{connector} Rectangle Container: {self.name} at level {self.level} " + ( self.MAXLEN - length - 1 ) * "─" + "┤" )
+        new_prefix = prefix + ("   " if prefix else "")
+        flag += 1
+        for i, child in enumerate(self.children):
+            if i == len(self.children) - 1:
+                child.draw( max( 0 , ( flag ) ) * "│  " + max( 0 , len(new_prefix) // 3 - flag ) * "│  " + "├──" , flag - 1 )
+                flag -= 1
+            else:
+                child.draw( max( 0 , ( flag ) ) * "│  " + max( 0 , len(new_prefix) // 3 - flag ) * "│  " + "├──" , flag )
+        if ( self.level == 0 ):
+            print( f"{self.icon} " "└" + "─" * ( self.MAXLEN - 2 ) + "┘" )
