@@ -4,7 +4,9 @@ class IconFamily:
         raise NotImplementedError
 
 class ChessIconFamily(IconFamily):
-    def get_icon(self, component_type):
+    def __init__(self):
+        self.name = 'chess'
+    def get_icon(self, component_type): 
         icons = {
             'container': '♔',
             'leaf': '♙'
@@ -12,6 +14,8 @@ class ChessIconFamily(IconFamily):
         return icons.get(component_type, '')
 
 class SmileIconFamily(IconFamily):
+    def __init__(self):
+        self.name = 'smile'
     def get_icon(self, component_type):
         icons = {
             'container': '😉',
